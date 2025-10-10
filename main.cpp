@@ -36,6 +36,6 @@ int main(){
         cout<<"Are you sure you wanna quit?(y/n)";
         cin>>c;
         if(c=='y') break;
-        else cout<<endl<<"You don't? Well let's start again."<<endl;
+        else cout<<endl<<"You don't? Well, let's start again."<<endl;
     }
 }
