@@ -1,0 +1,81 @@
+name: Build C++ Project
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            name: Linux
+          - os: windows-latest
+            name: Windows
+          - os: macos-latest
+            name: macOS
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up build environment
+      run: |
+        echo "Setting up build environment for ${{ matrix.name }}"
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+        elif [ "$RUNNER_OS" = "macOS" ]; then
+          brew install cmake
+        fi
+
+    - name: Configure CMake (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+
+    - name: Configure CMake (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build project
+      run: |
+        cd build
+        cmake --build . --config Release
+
+    - name: Run tests (optional)
+      run: |
+        cd build
+        if [ -f "test" ] || [ -f "test.exe" ] || [ -f "Debug/test.exe" ] || [ -f "Release/test.exe" ]; then
+          echo "Running tests..."
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            if [ -f "Release/test.exe" ]; then
+              ./Release/test.exe
+            elif [ -f "test.exe" ]; then
+              ./test.exe
+            fi
+          else
+            if [ -f "test" ]; then
+              ./test
+            fi
+          fi
+        else
+          echo "No test executable found, skipping tests"
+        fi
+
+    - name: Upload build artifacts (optional)
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.name }}-build
+        path: build/
+        if-no-files-found: ignore
