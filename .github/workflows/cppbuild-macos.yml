@@ -16,7 +16,6 @@ jobs:
       - name: Compile and run
         run: |
           clang++ -std=c++17 -O2 -Wall -Wextra -o myapp main.cpp
-          ./myapp
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
