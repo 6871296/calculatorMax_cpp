@@ -1,4 +1,4 @@
-name: Build C++ Project
+name: Build C++ (No CMake)
 
 on:
   push:
@@ -12,70 +12,36 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - os: ubuntu-latest
-            name: Linux
-          - os: windows-latest
-            name: Windows
-          - os: macos-latest
-            name: macOS
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up build environment
+    - name: Build on Linux
+      if: runner.os == 'Linux'
       run: |
-        echo "Setting up build environment for ${{ matrix.name }}"
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake
-        elif [ "$RUNNER_OS" = "macOS" ]; then
-          brew install cmake
-        fi
+        g++ -std=c++17 -O2 -Wall -Wextra -o myapp main.cpp
+        ./myapp
 
-    - name: Configure CMake (Linux/macOS)
-      if: matrix.os != 'windows-latest'
+    - name: Build on macOS
+      if: runner.os == 'macOS'
       run: |
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
+        clang++ -std=c++17 -O2 -Wall -Wextra -o myapp main.cpp
+        ./myapp
 
-    - name: Configure CMake (Windows)
-      if: matrix.os == 'windows-latest'
+    - name: Build on Windows
+      if: runner.os == 'Windows'
       run: |
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
+        g++ -std=c++17 -O2 -Wall -Wextra -o myapp.exe main.cpp
+        .\myapp.exe
 
-    - name: Build project
-      run: |
-        cd build
-        cmake --build . --config Release
-
-    - name: Run tests (optional)
-      run: |
-        cd build
-        if [ -f "test" ] || [ -f "test.exe" ] || [ -f "Debug/test.exe" ] || [ -f "Release/test.exe" ]; then
-          echo "Running tests..."
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            if [ -f "Release/test.exe" ]; then
-              ./Release/test.exe
-            elif [ -f "test.exe" ]; then
-              ./test.exe
-            fi
-          else
-            if [ -f "test" ]; then
-              ./test
-            fi
-          fi
-        else
-          echo "No test executable found, skipping tests"
-        fi
-
-    - name: Upload build artifacts (optional)
-      uses: actions/upload-artifact@v3
+    # 可选：上传可执行文件作为构建产物（使用 v4）
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      if: success()
       with:
-        name: ${{ matrix.name }}-build
-        path: build/
+        name: myapp-${{ runner.os }}
+        path: |
+          myapp
+          myapp.exe
         if-no-files-found: ignore
