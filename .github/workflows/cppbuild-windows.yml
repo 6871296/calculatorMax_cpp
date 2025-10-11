@@ -1,0 +1,27 @@
+name: Build on Windows
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile and run
+        run: |
+          g++ -std=c++17 -O2 -Wall -Wextra -o myapp.exe main.cpp
+          .\myapp.exe
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: myapp-windows
+          path: myapp.exe
+          if-no-files-found: ignore
