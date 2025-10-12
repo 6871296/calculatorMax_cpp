@@ -1,0 +1,26 @@
+name: Build on macOS
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile and run
+        run: |
+          clang++ -std=c++17 -O2 -Wall -Wextra -o myapp main.cpp
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: myapp-macos
+          path: myapp
+          if-no-files-found: ignore

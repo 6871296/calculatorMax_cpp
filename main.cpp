@@ -1,16 +1,16 @@
 #include<iostream>
 #include<cstring>
 using namespace std;
-int nums[65536];
-char cals[65535],c,s[2147483648],nums_char[65536][2147483648];
+int nums[32768];
+char cals[32768],c,s[32768],nums_char[32768][32768];
 unsigned short cals_sum=0,nums_sum[65536],nums_sum_sum=0;
 int main(){
     cout<<"calculatorMax-cpp enter nothing to quit."<<endl;
     while(true){
-        while(cin>>s){//enter nothing to quit.
-            for(int i=1;i<=65536;i++){//列表数据清除
-                nums_sum[i]=0;
-                nums[i]=0;
+        while(cin>>s){//enter nothing to quit
+            for(size_t i = 0; i < sizeof(nums)/sizeof(nums[0]); ++i) {
+                nums[i] = 0;
+                nums_sum[i] = 0;
             }
             for(int i=1;i<=strlen(s);i++){//分拣字符
                 if(s[i]=='+' || s[i]=='-' || s[i]=='*' || s[i]=='/' || s[i]=='%')//是运算符则加入运算字符串

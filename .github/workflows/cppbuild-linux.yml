@@ -1,0 +1,31 @@
+name: Build on Linux
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+
+      - name: Compile and run
+        run: |
+          g++ -std=c++17 -O2 -Wall -Wextra -o myapp main.cpp
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: myapp-linux
+          path: myapp
+          if-no-files-found: ignore
