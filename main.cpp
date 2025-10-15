@@ -12,7 +12,7 @@ int main(){
                 nums[i] = 0;
                 nums_sum[i] = 0;
             }
-            for(int i=1;i<=（int)strlen(s);i++){//分拣字符
+            for(int i=1;i<=strlen(s);i++){//分拣字符
                 if(s[i]=='+' || s[i]=='-' || s[i]=='*' || s[i]=='/' || s[i]=='%')//是运算符则加入运算字符串
                     cals[++cals_sum]=s[i];
                 else nums_char[++nums_sum_sum][++nums_sum[nums_sum_sum]]=s[i];//否则加入整数字符串
