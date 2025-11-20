@@ -1,10 +1,2 @@
-# calculatorMax（C++版）
-**此代码严重怀疑有bug，请不要使用**
-这个只是练习C++的代码，之后可能会倾向于位运算。正常运算还是要使用[Python原版](https://github.com/6871296/calculatorMax)。
-无需预装任何外部库。
-## 功能
-- `+`：加法
-- `-`：减法
-- `*`：乘法
-- `/`：除法
-- `%`：取余
+# calculatorMax（C++版）仓库Archive通知
+昨天我发现Python也支持位运算，所以这个仓库变得无意义，因此本仓库停止支持。之后使用位运算功能可以去[calculatorMax](https://github.com/6871296/calculatorMax)查看新的bitCalculator功能。
